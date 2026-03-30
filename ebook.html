@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📘 Fortuna Dashboard — Manual Completo</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07070A;
+            --panel: #0D0D10;
+            --border: rgba(212,175,55,0.22);
+            --gold: #D4AF37;
+            --gold-light: #F5C518;
+            --gold-bright: #FFD700;
+            --chrome: #C8C8CC;
+            --chrome-dark: #78787E;
+            --text: #F0F0F4;
+            --text-dim: #98989F;
+            --text-muted: #52525A;
+            --green: #32D74B;
+            --red: #FF453A;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.8;
+            padding: 0;
+        }
+
+        /* ── HERO ────────────────────── */
+        .hero {
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(212,175,55,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(200,200,204,0.05) 0%, transparent 50%),
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 5px),
+                repeating-linear-gradient(-45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 5px),
+                var(--panel);
+            padding: 80px 40px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #9A7C20, #D4AF37, #F5C518, #D4AF37, #8A6C10);
+        }
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            border: 1px solid rgba(212,175,55,0.4);
+            border-radius: 30px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--gold);
+            background: rgba(212,175,55,0.06);
+            margin-bottom: 30px;
+        }
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 900;
+            background: linear-gradient(180deg, #E8E8EC 0%, #B8B8C0 35%, #888890 65%, #C8C8D0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+        .hero h2 {
+            font-size: 20px;
+            font-weight: 300;
+            color: var(--text-dim);
+            margin-bottom: 30px;
+        }
+        .hero-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+        .hero-meta a { color: var(--gold); text-decoration: none; }
+        .hero-meta a:hover { text-decoration: underline; }
+
+        /* ── CONTENT ─────────────────── */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        /* ── TOC ─────────────────────── */
+        .toc {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px 36px;
+            margin-bottom: 60px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+        }
+        .toc h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .toc ol {
+            list-style: none;
+            counter-reset: toc-counter;
+            padding: 0;
+        }
+        .toc li {
+            counter-increment: toc-counter;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .toc li:last-child { border-bottom: none; }
+        .toc a {
+            color: var(--chrome);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .toc a:hover { color: var(--gold-light); }
+        .toc a::before {
+            content: counter(toc-counter, decimal-leading-zero) " ";
+            color: var(--gold);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            margin-right: 12px;
+        }
+
+        /* ── CHAPTERS ────────────────── */
+        .chapter {
+            margin-bottom: 80px;
+        }
+        .chapter-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        h2.chapter-title {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+        h3 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--chrome);
+            margin: 40px 0 16px 0;
+        }
+        h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gold);
+            margin: 30px 0 12px 0;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        p { margin-bottom: 16px; color: var(--text-dim); }
+
+        /* ── IMAGES ──────────────────── */
+        .screenshot {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin: 24px 0;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+        }
+        .img-caption {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-style: italic;
+            margin: -12px 0 30px 0;
+        }
+
+        /* ── TABLES ──────────────────── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0 30px 0;
+            font-size: 14px;
+        }
+        th {
+            background: rgba(212,175,55,0.08);
+            color: var(--gold);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: var(--text-dim);
+        }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        /* ── CODE ────────────────────── */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            background: rgba(212,175,55,0.08);
+            color: var(--gold-light);
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+        pre {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 24px;
+            overflow-x: auto;
+            margin: 16px 0 24px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--chrome);
+        }
+
+        /* ── ALERTS ──────────────────── */
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 20px 0;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .alert-note {
+            background: rgba(0,150,255,0.06);
+            border-left: 3px solid #3B82F6;
+            color: #93C5FD;
+        }
+        .alert-tip {
+            background: rgba(50,215,75,0.06);
+            border-left: 3px solid var(--green);
+            color: #86EFAC;
+        }
+        .alert-warning {
+            background: rgba(255,200,0,0.06);
+            border-left: 3px solid var(--gold);
+            color: var(--gold-light);
+        }
+        .alert-danger {
+            background: rgba(255,69,58,0.06);
+            border-left: 3px solid var(--red);
+            color: #FCA5A5;
+        }
+        .alert-label {
+            font-weight: 800;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ── LISTS ───────────────────── */
+        ul, ol { padding-left: 20px; margin-bottom: 16px; }
+        li { margin-bottom: 6px; color: var(--text-dim); }
+        li strong { color: var(--text); }
+
+        /* ── DIVIDER ─────────────────── */
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 50px 0;
+        }
+
+        /* ── FOOTER ──────────────────── */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .footer .gold {
+            background: linear-gradient(135deg, #9A7C20, #D4AF37, #F5C518, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ── PRINT ───────────────────── */
+        @media print {
+            body { background: white; color: #111; }
+            .hero { background: #f5f5f5; }
+            .hero h1 { -webkit-text-fill-color: #111; }
+            .toc, pre { background: #f9f9f9; border-color: #ddd; }
+            p, li, td { color: #333; }
+            th { background: #eee; color: #333; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ HERO ═══ -->
+<div class="hero">
+    <div class="hero-badge">📘 EBOOK — MANUAL COMPLETO</div>
+    <h1>FORTUNA DASHBOARD</h1>
+    <h2>Mega-Sena Statistical Engine — Por Sosthenis</h2>
+    <div class="hero-meta">
+        Versão 2.0.26 &nbsp;·&nbsp; <a href="https://github.com/sosthenis/fortuna-megasena">github.com/sosthenis/fortuna-megasena</a> &nbsp;·&nbsp; React 19 + Vite 8 + Recharts 3
+    </div>
+</div>
+
+<div class="content">
+
+<!-- ═══════════════════════════════════════ TOC ═══ -->
+<div class="toc">
+    <h3>Sumário</h3>
+    <ol>
+        <li><a href="#cap1">Visão Geral</a></li>
+        <li><a href="#cap2">Interface Principal</a></li>
+        <li><a href="#cap3">Painel Lateral (Sidebar)</a></li>
+        <li><a href="#cap4">Indicadores KPI</a></li>
+        <li><a href="#cap5">Aba Panorama — Os 3 Gráficos</a></li>
+        <li><a href="#cap6">Aba Rankings</a></li>
+        <li><a href="#cap7">Aba Heatmap de Coocorrência</a></li>
+        <li><a href="#cap8">Aba Jogos — Gerador Bayesiano</a></li>
+        <li><a href="#cap9">A Matemática por Trás</a></li>
+        <li><a href="#cap10">Glossário</a></li>
+        <li><a href="#cap11">FAQ — Perguntas Frequentes</a></li>
+    </ol>
+</div>
+
+<!-- ═══════════════════════════════════════ CAP 1 ═══ -->
+<div class="chapter" id="cap1">
+    <div class="chapter-number">Capítulo 01</div>
+    <h2 class="chapter-title">Visão Geral</h2>
+
+    <p>O <strong>Fortuna Dashboard</strong> é uma aplicação web de análise estatística avançada para os sorteios da <strong>Mega-Sena</strong>. Ele processa automaticamente <strong>mais de 2.700 concursos históricos</strong> e apresenta os resultados em gráficos interativos, mapas de calor e um gerador inteligente de combinações.</p>
+
+    <img src="docs_panorama.png" class="screenshot" alt="Visão geral do dashboard">
+    <div class="img-caption">Visão geral do Fortuna Dashboard com a aba Panorama aberta</div>
+
+    <h3>O que o sistema faz:</h3>
+    <ul>
+        <li>✅ Analisa a <strong>frequência</strong> de cada uma das 60 dezenas ao longo de todos os concursos</li>
+        <li>✅ Calcula a <strong>probabilidade bayesiana</strong> de cada número</li>
+        <li>✅ Identifica <strong>desvios estatísticos</strong> (números "quentes" e "frios")</li>
+        <li>✅ Mapeia quais <strong>pares de números</strong> mais aparecem juntos (coocorrência)</li>
+        <li>✅ Gera <strong>combinações de jogos</strong> ponderadas pela estatística</li>
+    </ul>
+
+    <h3>O que o sistema NÃO faz:</h3>
+    <ul>
+        <li>❌ <strong>Não prevê o futuro.</strong> A Mega-Sena é um sorteio aleatório</li>
+        <li>❌ <strong>Não garante ganhos.</strong> As probabilidades são históricas, não preditivas</li>
+        <li>❌ <strong>Não substitui a sorte.</strong> É uma ferramenta de análise, não um oráculo</li>
+    </ul>
+
+    <div class="alert alert-warning">
+        <div class="alert-label">⚠️ Importante</div>
+        Como o próprio rodapé do sistema diz: <em>"Sorteio é aleatório. Se esse painel acertar seis dezenas, pode me chamar de oráculo. Até lá, somos dois adultos elegantes olhando probabilidades com textura de carbono."</em>
+    </div>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════ CAP 2 ═══ -->
+<div class="chapter" id="cap2">
+    <div class="chapter-number">Capítulo 02</div>
+    <h2 class="chapter-title">Interface Principal</h2>
+
+    <p>O dashboard é dividido em <strong>duas áreas principais</strong>:</p>
+
+    <table>
+        <tr><th>Área</th><th>Localização</th><th>Função</th></tr>
+        <tr><td><strong>Painel Lateral</strong></td><td>Esquerda</td><td>Controles e configurações</td></tr>
+        <tr><td><strong>Header</strong></td><td>Topo direito</td><td>Título e badge do autor</td></tr>
+        <tr><td><strong>KPI Cards</strong></td><td>Abaixo do header</td><td>Métricas resumidas</td></tr>
+        <tr><td><strong>Abas</strong></td><td>Centro</td><td>Conteúdo principal (gráficos, tabelas, jogos)</td></tr>
+        <tr><td><strong>Rodapé</strong></td><td>Inferior</td><td>Disclaimer e créditos</td></tr>
+    </table>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════ CAP 3 ═══ -->
+<div class="chapter" id="cap3">
+    <div class="chapter-number">Capítulo 03</div>
+    <h2 class="chapter-title">Painel Lateral (Sidebar)</h2>
+
+    <p>O painel lateral é o <strong>centro de comando</strong> do dashboard. Ele fica fixo no lado esquerdo e contém todos os controles.</p>
+
+    <img src="docs_sidebar.png" class="screenshot" alt="Painel lateral">
+    <div class="img-caption">Painel lateral com sliders de controle e botão de geração</div>
+
+    <h4>🎚️ Slider: "Faixa de Dezenas"</h4>
+    <table>
+        <tr><th>Propriedade</th><th>Detalhe</th></tr>
+        <tr><td>Controle</td><td>Dois cursores deslizantes (mín e máx)</td></tr>
+        <tr><td>Intervalo</td><td>De 01 a 60</td></tr>
+        <tr><td>Padrão</td><td>01 — 60 (todas as dezenas)</td></tr>
+        <tr><td>Restrição</td><td>A diferença mínima entre os dois cursores é 5</td></tr>
+    </table>
+    <p><strong>O que faz:</strong> Filtra quais dezenas você quer analisar. Se você mover para <code>10 — 30</code>, todos os gráficos, rankings e jogos só considerarão as dezenas de 10 a 30.</p>
+
+    <h4>🎚️ Slider: "Top Ranking"</h4>
+    <table>
+        <tr><th>Propriedade</th><th>Detalhe</th></tr>
+        <tr><td>Intervalo</td><td>De 5 a 20</td></tr>
+        <tr><td>Padrão</td><td>10</td></tr>
+    </table>
+    <p><strong>O que faz:</strong> Define quantas dezenas aparecem na aba "Rankings". Se estiver em 10, você verá o "Top 10". Se colocar em 15, verá o Top 15.</p>
+
+    <h4>🎚️ Slider: "Quantidade de Jogos"</h4>
+    <table>
+        <tr><th>Propriedade</th><th>Detalhe</th></tr>
+        <tr><td>Intervalo</td><td>De 3 a 20</td></tr>
+        <tr><td>Padrão</td><td>10</td></tr>
+    </table>
+    <p><strong>O que faz:</strong> Define quantas combinações o gerador vai produzir ao clicar em "Gerar Novos Jogos".</p>
+
+    <h4>🔘 Botão: "◈ GERAR NOVOS JOGOS"</h4>
+    <p><strong>O que faz:</strong> Dispara o algoritmo de geração bayesiana. Cada clique produz um novo conjunto de jogos, todos diferentes entre si. Os jogos são baseados nos pesos estatísticos das dezenas dentro da faixa selecionada.</p>
+
+    <div class="alert alert-tip">
+        <div class="alert-label">💡 Dica</div>
+        Você pode clicar várias vezes para gerar conjuntos diferentes. Cada clique produz combinações únicas.
+    </div>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════ CAP 4 ═══ -->
+<div class="chapter" id="cap4">
+    <div class="chapter-number">Capítulo 04</div>
+    <h2 class="chapter-title">Indicadores KPI</h2>
+
+    <p>Os quatro cartões no topo da área principal resumem as métricas mais importantes:</p>
+
+    <table>
+        <tr><th>#</th><th>Nome</th><th>Exemplo</th><th>Significado</th></tr>
+        <tr><td>1</td><td><strong>Concursos Lidos</strong></td><td><code>2.797</code></td><td>Total de sorteios processados da base histórica</td></tr>
+        <tr><td>2</td><td><strong>Faixa Ativa</strong></td><td><code>01 — 60</code></td><td>Qual recorte de dezenas está sendo analisado</td></tr>
+        <tr><td>3</td><td><strong>Dezena Dominante</strong></td><td><code>10</code> (328x)</td><td>O número que mais apareceu nos sorteios</td></tr>
+        <tr><td>4</td><td><strong>Bayes Supremo</strong></td><td><code>10</code> (0.0195)</td><td>O número com maior peso bayesiano</td></tr>
+    </table>
+
+    <div class="alert alert-note">
+        <div class="alert-label">ℹ️ Nota</div>
+        Os cards 3 e 4 têm destaque <strong>dourado (gold)</strong> pois representam os dados mais relevantes. Os dois primeiros usam o tom <strong>prateado (chrome)</strong>, pois são informativos.
+    </div>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════ CAP 5 ═══ -->
+<div class="chapter" id="cap5">
+    <div class="chapter-number">Capítulo 05</div>
+    <h2 class="chapter-title">Aba Panorama — Os 3 Gráficos</h2>
+
+    <p>A aba Panorama exibe três gráficos de barras lado a lado:</p>
+
+    <img src="docs_panorama.png" class="screenshot" alt="Aba Panorama">
+    <div class="img-caption">Os três gráficos da aba Panorama: Frequência, Bayes e Desvio</div>
+
+    <h3>📊 Frequência Histórica</h3>
+    <table>
+        <tr><th>Propriedade</th><th>Detalhe</th></tr>
+        <tr><td>Eixo X</td><td>Dezenas (01 a 60)</td></tr>
+        <tr><td>Eixo Y</td><td>Quantidade de vezes sorteada</td></tr>
+        <tr><td>Cor</td><td>Dourado (gold)</td></tr>
+    </table>
+    <p><strong>O que mostra:</strong> A contagem absoluta de quantas vezes cada número apareceu em <strong>todos os concursos</strong>. Barras mais altas = números mais frequentes.</p>
+    <p><strong>Como ler:</strong> Se a barra do número 10 está no nível 328, isso significa que o número 10 foi sorteado 328 vezes ao longo dos 2.797 concursos.</p>
+
+    <h3>📊 Probabilidade Bayesiana</h3>
+    <table>
+        <tr><th>Propriedade</th><th>Detalhe</th></tr>
+        <tr><td>Eixo X</td><td>Dezenas (01 a 60)</td></tr>
+        <tr><td>Eixo Y</td><td>Peso probabilístico (0 a 1)</td></tr>
+        <tr><td>Cor</td><td>Prateado (chrome)</td></tr>
+    </table>
+    <p><strong>O que mostra:</strong> A "chance estimada" de cada dezena, calculada usando o Teorema de Bayes com prior uniforme (alfa = 1). Quanto maior a barra, maior o peso no gerador de jogos.</p>
+
+    <h3>📊 Desvio da Média</h3>
+    <table>
+        <tr><th>Propriedade</th><th>Detalhe</th></tr>
+        <tr><td>Eixo X</td><td>Dezenas (01 a 60)</td></tr>
+        <tr><td>Eixo Y</td><td>Desvio em relação à média</td></tr>
+        <tr><td>Barra verde</td><td>Acima da média (número "quente")</td></tr>
+        <tr><td>Barra vermelha</td><td>Abaixo da média (número "frio")</td></tr>
+    </table>
+    <p><strong>O que mostra:</strong> Quanto cada dezena se desvia da frequência média esperada. Barras verdes são números que apareceram <strong>mais</strong> que o esperado; vermelhas indicam o contrário.</p>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════ CAP 6 ═══ -->
+<div class="chapter" id="cap6">
+    <div class="chapter-number">Capítulo 06</div>
+    <h2 class="chapter-title">Aba Rankings</h2>
+
+    <img src="docs_rankings.png" class="screenshot" alt="Aba Rankings">
+    <div class="img-caption">Top 10 em Frequência, Bayes e Desvio</div>
+
+    <p>A aba Rankings mostra três gráficos de barras <strong>horizontais</strong> com os líderes em cada categoria:</p>
+
+    <table>
+        <tr><th>Ranking</th><th>Cor</th><th>O que mostra</th></tr>
+        <tr><td><strong>Top N — Frequência</strong></td><td>Dourado</td><td>As N dezenas que mais foram sorteadas</td></tr>
+        <tr><td><strong>Top N — Bayes</strong></td><td>Prateado</td><td>As N dezenas com maior peso bayesiano</td></tr>
+        <tr><td><strong>Top N — Desvio</strong></td><td>Verde</td><td>As N dezenas com maior desvio positivo</td></tr>
+    </table>
+
+    <p>O valor de N é controlado pelo slider "Top Ranking" no painel lateral (padrão: 10).</p>
+
+    <div class="alert alert-tip">
+        <div class="alert-label">💡 Dica</div>
+        Frequência e Bayes tendem a mostrar resultados parecidos porque temos muitos dados (>2700 concursos). A diferença real aparece em datasets menores ou faixas reduzidas.
+    </div>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════ CAP 7 ═══ -->
+<div class="chapter" id="cap7">
+    <div class="chapter-number">Capítulo 07</div>
+    <h2 class="chapter-title">Aba Heatmap de Coocorrência</h2>
+
+    <img src="docs_heatmap.png" class="screenshot" alt="Aba Heatmap">
+    <div class="img-caption">Heatmap mostrando quais pares de números mais aparecem juntos</div>
+
+    <h3>O que é Coocorrência?</h3>
+    <p>Coocorrência significa "aparecer junto". O heatmap mostra <strong>quantas vezes cada par de dezenas foi sorteado no mesmo concurso</strong>.</p>
+
+    <h3>Como ler o Heatmap</h3>
+    <p>É uma <strong>matriz quadrada</strong> onde o eixo X e o eixo Y representam dezenas. Cada célula mostra a intensidade com que aquele par apareceu junto:</p>
+
+    <table>
+        <tr><th>Cor da célula</th><th>Significado</th></tr>
+        <tr><td>⬛ Preto escuro</td><td>Coocorrência baixa (raro aparecerem juntos)</td></tr>
+        <tr><td>⬛ Cinza escuro</td><td>Abaixo da média</td></tr>
+        <tr><td>◻️ Cinza médio</td><td>Na média</td></tr>
+        <tr><td>◻️ Cinza claro</td><td>Acima da média</td></tr>
+        <tr><td>🟡 Dourado brilhante</td><td>Coocorrência máxima!</td></tr>
+    </table>
+
+    <div class="alert alert-warning">
+        <div class="alert-label">⚠️ Atenção</div>
+        Se a faixa de dezenas for muito grande (01-60), o heatmap terá 60×60 = 3.600 células. Use o slider "Faixa de Dezenas" para reduzir a visualização (ex: 01-20) e ver mais detalhes.
+    </div>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════ CAP 8 ═══ -->
+<div class="chapter" id="cap8">
+    <div class="chapter-number">Capítulo 08</div>
+    <h2 class="chapter-title">Aba Jogos — Gerador Bayesiano</h2>
+
+    <img src="docs_jogos.png" class="screenshot" alt="Aba Jogos">
+    <div class="img-caption">Jogos gerados com peso bayesiano — cada card é uma combinação única</div>
+
+    <h3>Como funciona o Gerador</h3>
+    <ol>
+        <li>O sistema calcula a <strong>probabilidade bayesiana</strong> de cada dezena na faixa selecionada</li>
+        <li>As probabilidades são <strong>normalizadas</strong> (somam 100%)</li>
+        <li>Para cada jogo, sorteia 6 números usando <strong>amostragem ponderada</strong></li>
+        <li>Cada jogo é <strong>único</strong> — o sistema garante que não haja duplicatas</li>
+    </ol>
+
+    <h4>Algoritmo passo a passo:</h4>
+    <pre>
+1. Filtrar dezenas disponíveis pela faixa do slider
+2. Normalizar as probabilidades bayesianas
+3. Para cada jogo:
+   a. Criar cópia das probabilidades
+   b. Sortear 1ª dezena (ponderada)
+   c. Remover a dezena escolhida do pool
+   d. Recalcular soma das probabilidades restantes
+   e. Repetir até ter 6 dezenas
+   f. Ordenar as 6 dezenas em ordem crescente
+4. Verificar se o jogo é único
+5. Repetir até ter N jogos únicos</pre>
+
+    <h4>Controles que afetam os Jogos:</h4>
+    <table>
+        <tr><th>Controle</th><th>Efeito</th></tr>
+        <tr><td><strong>Slider "Faixa de Dezenas"</strong></td><td>Restringe quais números podem ser escolhidos</td></tr>
+        <tr><td><strong>Slider "Quantidade de Jogos"</strong></td><td>Define quantos jogos serão gerados (3 a 20)</td></tr>
+        <tr><td><strong>Botão "Gerar Novos Jogos"</strong></td><td>Executa o algoritmo e mostra novos resultados</td></tr>
+    </table>
+
+    <div class="alert alert-danger">
+        <div class="alert-label">🚨 Cuidado</div>
+        Se a faixa de dezenas tiver <strong>menos de 6 números disponíveis</strong>, o sistema exibirá "FAIXA INVÁLIDA" em vermelho. A Mega-Sena exige exatamente 6 dezenas por jogo.
+    </div>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════ CAP 9 ═══ -->
+<div class="chapter" id="cap9">
+    <div class="chapter-number">Capítulo 09</div>
+    <h2 class="chapter-title">A Matemática por Trás</h2>
+
+    <p>Esta seção explica as fórmulas e conceitos estatísticos do Fortuna Dashboard.</p>
+
+    <h3>9.1 Frequência Absoluta</h3>
+    <p>A métrica mais simples: contar quantas vezes cada dezena apareceu.</p>
+    <pre>
+Para cada concurso na base:
+    Para cada dezena sorteada:
+        freq[dezena] += 1</pre>
+    <p><strong>Exemplo:</strong> Se a dezena 10 apareceu em 328 dos 2.797 concursos, sua frequência absoluta é 328.</p>
+
+    <h3>9.2 Teorema de Bayes Aplicado</h3>
+    <p>O sistema utiliza uma <strong>Estimação Bayesiana com Prior Dirichlet</strong>:</p>
+    <pre>
+posterior[i] = freq[i] + α[i]    (onde α = 1 para todas)
+
+                posterior[i]
+P(i) = ─────────────────────────────
+        Σ posterior[j]  (j=1..60)</pre>
+
+    <p>Onde:</p>
+    <ul>
+        <li><code>freq[i]</code> = frequência absoluta da dezena i</li>
+        <li><code>α[i]</code> = prior (valor 1 para todas → prior uniforme)</li>
+        <li><code>P(i)</code> = probabilidade estimada da dezena i</li>
+    </ul>
+
+    <h4>Por que Prior = 1?</h4>
+    <p>O valor <code>α = 1</code> equivale a dizer: "antes de ver qualquer dado, assumo que todas as dezenas têm a mesma chance." É a abordagem mais neutra possível.</p>
+
+    <h4>Exemplo numérico:</h4>
+    <pre>
+freq[10] = 328
+alfa[10] = 1
+posterior[10] = 329
+
+soma_posterior ≈ 16.842
+
+P(10) = 329 / 16.842 ≈ 0.01954
+
+Uniforme: 1/60 = 0.01667
+→ Dezena 10 tem ~17% a mais de peso que a média</pre>
+
+    <h3>9.3 Desvio da Média</h3>
+    <pre>
+total_dezenas = soma de todas as frequências
+média_esperada = total_dezenas / 60
+desvio[i] = freq[i] - média_esperada</pre>
+    <ul>
+        <li><strong>Desvio > 0:</strong> Número "quente" — apareceu mais que o esperado</li>
+        <li><strong>Desvio < 0:</strong> Número "frio" — apareceu menos que o esperado</li>
+    </ul>
+
+    <h3>9.4 Coocorrência (Matriz de Pares)</h3>
+    <pre>
+Para cada concurso:
+    Para cada par (i, j) de dezenas sorteadas:
+        cooc[i][j] += 1
+        cooc[j][i] += 1    // Matriz simétrica</pre>
+    <p>Produz uma <strong>matriz 60×60</strong> onde cada célula contém quantas vezes aquele par apareceu junto.</p>
+
+    <h3>9.5 Amostragem Ponderada (Gerador)</h3>
+    <pre>
+1. Normalizar probabilidades na faixa selecionada
+2. Para cada número a escolher:
+   a. Gerar r aleatório entre 0 e soma(probs)
+   b. Acumular probabilidades da esquerda
+   c. Quando acumulado > r → selecionar dezena
+   d. Remover dezena do pool
+3. Repetir 6x para completar jogo</pre>
+    <p>Dezenas com maior probabilidade bayesiana têm mais chance de serem incluídas, sem excluir as menos frequentes.</p>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════ CAP 10 ═══ -->
+<div class="chapter" id="cap10">
+    <div class="chapter-number">Capítulo 10</div>
+    <h2 class="chapter-title">Glossário</h2>
+
+    <table>
+        <tr><th>Termo</th><th>Definição</th></tr>
+        <tr><td><strong>Dezena</strong></td><td>Cada um dos 60 números possíveis na Mega-Sena (01 a 60)</td></tr>
+        <tr><td><strong>Concurso</strong></td><td>Um sorteio oficial da Mega-Sena</td></tr>
+        <tr><td><strong>Frequência</strong></td><td>Quantas vezes um número foi sorteado</td></tr>
+        <tr><td><strong>Prior</strong></td><td>Suposição inicial em estatística bayesiana</td></tr>
+        <tr><td><strong>Posterior</strong></td><td>Resultado atualizado após considerar os dados observados</td></tr>
+        <tr><td><strong>Bayesiano</strong></td><td>Relativo ao Teorema de Bayes (atualização de crenças com dados)</td></tr>
+        <tr><td><strong>Coocorrência</strong></td><td>Frequência com que dois eventos acontecem simultaneamente</td></tr>
+        <tr><td><strong>Heatmap</strong></td><td>Mapa de calor — gráfico que usa cores para representar intensidades</td></tr>
+        <tr><td><strong>Amostragem ponderada</strong></td><td>Sorteio onde cada opção tem um peso diferente</td></tr>
+        <tr><td><strong>Prior uniforme</strong></td><td>Assumir chances iguais para todos antes de ver os dados</td></tr>
+        <tr><td><strong>Desvio</strong></td><td>Diferença entre o valor observado e o valor esperado</td></tr>
+        <tr><td><strong>KPI</strong></td><td>Key Performance Indicator — indicador-chave de desempenho</td></tr>
+    </table>
+</div>
+
+<hr>
+
+<!-- ═══════════════════════════════════════ CAP 11 ═══ -->
+<div class="chapter" id="cap11">
+    <div class="chapter-number">Capítulo 11</div>
+    <h2 class="chapter-title">FAQ — Perguntas Frequentes</h2>
+
+    <h4>❓ O sistema prevê qual número vai sair?</h4>
+    <p><strong>Não.</strong> A Mega-Sena é um sorteio aleatório com equiprobabilidade. O sistema analisa padrões históricos, mas não há como prever sorteios futuros com base no passado.</p>
+
+    <h4>❓ Por que usar Bayes se poderia ser só frequência?</h4>
+    <p>A estimação bayesiana é mais robusta: ela evita que dezenas com frequência zero (em recortes menores) tenham probabilidade zero, e produz uma distribuição mais suave e matematicamente elegante.</p>
+
+    <h4>❓ O heatmap está muito escuro, é normal?</h4>
+    <p>Sim. Com 60 dezenas, existem 1.770 pares possíveis, então a maioria terá valores intermediários. Use o slider "Faixa de Dezenas" para reduzir (ex: 01-20) e ver mais detalhes.</p>
+
+    <h4>❓ Os jogos gerados são realmente diferentes entre si?</h4>
+    <p>Sim. O sistema usa um <code>Set()</code> para garantir que cada combinação (ordenada) seja única. Se dois jogos iguais forem gerados, o segundo é descartado.</p>
+
+    <h4>❓ De onde vêm os dados?</h4>
+    <p>Os dados são carregados de um repositório público no GitHub mantido por <a href="https://github.com/guilhermeasn/loteria.json" style="color: var(--gold);">@guilhermeasn</a>, que compila os resultados oficiais da Caixa em formato JSON.</p>
+
+    <h4>❓ O sistema funciona offline?</h4>
+    <p>Não na versão atual. Ele precisa baixar os dados do GitHub na primeira carga. Uma vez carregados, ficam na memória do navegador durante a sessão.</p>
+
+    <h4>❓ Posso usar no celular?</h4>
+    <p>Sim, mas a experiência é otimizada para <strong>desktop</strong>. O layout com sidebar e gráficos lado a lado funciona melhor em telas maiores.</p>
+</div>
+
+</div>
+
+<!-- ═══════════════════════════════════════ FOOTER ═══ -->
+<div class="footer">
+    <p style="margin-bottom: 12px; font-style: italic; color: var(--text-muted);">
+        "Entre fazer nada e fazer um dashboard de fibra de carbono absurdo,<br>a segunda opção claramente tem mais classe."
+    </p>
+    <p class="gold">© 2026 SOSTHENIS. FORTUNA ENGINE. CYBER-RESOURCE-MGMT.</p>
+</div>
+
+</body>
+</html>
