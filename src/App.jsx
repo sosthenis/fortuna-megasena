@@ -45,6 +45,7 @@ const CARBON_BG = `
 `;
 
 const GOLD_GRADIENT  = `linear-gradient(135deg, #9A7C20 0%, #D4AF37 30%, #F5C518 55%, #D4AF37 75%, #8A6C10 100%)`;
+const MAGIC_GOLD     = `linear-gradient(180deg, #FFD700 0%, #D4AF37 50%, #B8860B 100%)`;
 const CHROME_GRADIENT = `linear-gradient(180deg, #E8E8EC 0%, #B8B8C0 35%, #888890 65%, #C8C8D0 100%)`;
 const METAL_BORDER   = `1px solid rgba(212,175,55,0.22)`;
 
@@ -526,6 +527,12 @@ export default function MegaSenaDashboard() {
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
         ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 3px; }
+        
+        @keyframes magicGlow {
+          0% { box-shadow: 0 0 10px rgba(212,175,55,0.4), 0 0 20px rgba(212,175,55,0.2); transform: scale(1); }
+          50% { box-shadow: 0 0 25px rgba(212,175,55,0.8), 0 0 40px rgba(212,175,55,0.4); transform: scale(1.02); }
+          100% { box-shadow: 0 0 10px rgba(212,175,55,0.4), 0 0 20px rgba(212,175,55,0.2); transform: scale(1); }
+        }
       `}</style>
 
       <div style={{ display: "grid", gridTemplateColumns: "290px 1fr", gap: 16, maxWidth: 1440, margin: "0 auto" }}>
@@ -608,6 +615,44 @@ export default function MegaSenaDashboard() {
                   BY SOSTHENIS — THE ARCHITECT OF CHANCE
                 </div>
               </div>
+
+              {/* MAGIC TUTORIAL BUTTON */}
+              <a 
+                href="ebook.html" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "10px 24px",
+                  marginTop: 10,
+                  background: `linear-gradient(180deg, #F9D976 0%, #D4AF37 40%, #B88A0B 100%)`,
+                  border: "2px solid #8A6C10",
+                  borderRadius: "12px",
+                  textDecoration: "none",
+                  fontWeight: "900",
+                  fontSize: "13px",
+                  color: "#FFFFFF",
+                  fontFamily: "'JetBrains Mono', monospace",
+                  textTransform: "uppercase",
+                  letterSpacing: "1.5px",
+                  boxShadow: `
+                    0 6px 12px rgba(0,0,0,0.5),
+                    inset 0 2px 2px rgba(255,255,255,0.6),
+                    inset 0 -2px 3px rgba(0,0,0,0.4)
+                  `,
+                  animation: `magicGlow 2.4s infinite ease-in-out`,
+                  cursor: "pointer",
+                  transition: "all 0.3s",
+                  textAlign: "center",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.6)"
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.filter = "brightness(1.15)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.filter = "brightness(1)"; }}
+              >
+                ◈ Tutorial do sistema
+              </a>
             </div>
           </div>
 
