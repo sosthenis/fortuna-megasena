@@ -4,7 +4,7 @@ import {
 } from "recharts";
 
 const DATA_URL =
-  "https://raw.githubusercontent.com/guilhermeasn/loteria.json/master/data/megasena.json";
+  "https://loteriascaixa-api.herokuapp.com/api/megasena";
 
 // ═══════════════════════════════════════════════════
 // CHROME & CARBON PALETTE
@@ -429,8 +429,19 @@ export default function MegaSenaDashboard() {
   useEffect(() => {
     fetch(DATA_URL)
       .then((r) => r.json())
-      .then((d) => { setRawData(d); setLoading(false); })
-      .catch((e) => { setError(e.message); setLoading(false); });
+      .then((d) => {
+        // A nova API retorna um array, transformamos no objeto { concurso: dezenas } esperado
+        const mapped = d.reduce((acc, item) => {
+          acc[item.concurso] = item.dezenas;
+          return acc;
+        }, {});
+        setRawData(mapped);
+        setLoading(false);
+      })
+      .catch((e) => {
+        setError(e.message);
+        setLoading(false);
+      });
   }, []);
 
   const computed = useMemo(() => { if (!rawData) return null; return computeAll(rawData); }, [rawData]);
