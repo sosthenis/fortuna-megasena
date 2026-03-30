@@ -358,7 +358,7 @@
     <div class="chapter-number">Capítulo 01</div>
     <h2 class="chapter-title">Visão Geral</h2>
 
-    <p>O <strong>Fortuna Dashboard</strong> é uma aplicação web de análise estatística avançada para os sorteios da <strong>Mega-Sena</strong>. Ele processa automaticamente <strong>mais de 2.700 concursos históricos</strong> e apresenta os resultados em gráficos interativos, mapas de calor e um gerador inteligente de combinações.</p>
+    <p>O <strong>Fortuna Dashboard</strong> é uma aplicação de inteligência estatística de alta performance para a <strong>Mega-Sena</strong>. Diferente de ferramentas estáticas, o sistema processa automaticamente os concursos da Mega-Sena de forma <strong>dinâmica e em tempo real</strong>, garantindo que o motor estatístico e o gerador de combinações trabalhem sempre com <strong>prognósticos atualizados</strong> e baseados no histórico completo da Caixa Econômica Federal (atualmente com <strong>mais de 2.990 concursos</strong>).</p>
 
     <img src="docs_panorama.png" class="screenshot" alt="Visão geral do dashboard">
     <div class="img-caption">Visão geral do Fortuna Dashboard com a aba Panorama aberta</div>
@@ -462,7 +462,7 @@
 
     <table>
         <tr><th>#</th><th>Nome</th><th>Exemplo</th><th>Significado</th></tr>
-        <tr><td>1</td><td><strong>Concursos Lidos</strong></td><td><code>2.797</code></td><td>Total de sorteios processados da base histórica</td></tr>
+        <tr><td>1</td><td><strong>Concursos Lidos</strong></td><td><code>2.990</code></td><td>Total de sorteios processados da base histórica</td></tr>
         <tr><td>2</td><td><strong>Faixa Ativa</strong></td><td><code>01 — 60</code></td><td>Qual recorte de dezenas está sendo analisado</td></tr>
         <tr><td>3</td><td><strong>Dezena Dominante</strong></td><td><code>10</code> (328x)</td><td>O número que mais apareceu nos sorteios</td></tr>
         <tr><td>4</td><td><strong>Bayes Supremo</strong></td><td><code>10</code> (0.0195)</td><td>O número com maior peso bayesiano</td></tr>
@@ -494,7 +494,7 @@
         <tr><td>Cor</td><td>Dourado (gold)</td></tr>
     </table>
     <p><strong>O que mostra:</strong> A contagem absoluta de quantas vezes cada número apareceu em <strong>todos os concursos</strong>. Barras mais altas = números mais frequentes.</p>
-    <p><strong>Como ler:</strong> Se a barra do número 10 está no nível 328, isso significa que o número 10 foi sorteado 328 vezes ao longo dos 2.797 concursos.</p>
+    <p><strong>Como ler:</strong> Se a barra do número 10 está no nível 352, isso significa que o número 10 foi sorteado 352 vezes ao longo dos mais de 2.990 concursos.</p>
 
     <h3>📊 Probabilidade Bayesiana</h3>
     <table>
@@ -539,7 +539,7 @@
 
     <div class="alert alert-tip">
         <div class="alert-label">💡 Dica</div>
-        Frequência e Bayes tendem a mostrar resultados parecidos porque temos muitos dados (>2700 concursos). A diferença real aparece em datasets menores ou faixas reduzidas.
+        Frequência e Bayes tendem a mostrar resultados parecidos porque temos muitos dados (>2.990 concursos). A diferença real aparece em datasets menores ou faixas reduzidas.
     </div>
 </div>
 
@@ -730,6 +730,9 @@ Para cada concurso:
     <div class="chapter-number">Capítulo 11</div>
     <h2 class="chapter-title">FAQ — Perguntas Frequentes</h2>
 
+    <h4>❓ Quantos concursos o sistema analisa?</h4>
+    <p><strong>Mais de 2.990 sorteios.</strong> O sistema processa dinamicamente todos os concursos históricos, abrangendo desde o primeiro sorteio até o mais recente disponível na API oficial da loteria.</p>
+
     <h4>❓ O sistema prevê qual número vai sair?</h4>
     <p><strong>Não.</strong> A Mega-Sena é um sorteio aleatório com equiprobabilidade. O sistema analisa padrões históricos, mas não há como prever sorteios futuros com base no passado.</p>
 
@@ -743,7 +746,7 @@ Para cada concurso:
     <p>Sim. O sistema usa um <code>Set()</code> para garantir que cada combinação (ordenada) seja única. Se dois jogos iguais forem gerados, o segundo é descartado.</p>
 
     <h4>❓ De onde vêm os dados?</h4>
-    <p>Os dados são carregados de um repositório público no GitHub mantido por <a href="https://github.com/guilhermeasn/loteria.json" style="color: var(--gold);">@guilhermeasn</a>, que compila os resultados oficiais da Caixa em formato JSON.</p>
+    <p>Os dados são consumidos via <strong>API pública de loterias</strong>, de forma automática e dinâmica. Isso garante que cada vez que você abre o dashboard, o sistema sincronize os resultados mais recentes da Caixa sem intervenção manual.</p>
 
     <h4>❓ O sistema funciona offline?</h4>
     <p>Não na versão atual. Ele precisa baixar os dados do GitHub na primeira carga. Uma vez carregados, ficam na memória do navegador durante a sessão.</p>
