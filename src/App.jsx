@@ -131,6 +131,42 @@ function generateGames(n, start, end, prob) {
 }
 
 // ═══════════════════════════════════════════════════
+// MONEY RAIN COMPONENT
+// ═══════════════════════════════════════════════════
+const MoneyRain = () => {
+  const [bills, setBills] = useState([]);
+  useEffect(() => {
+    const newBills = Array.from({ length: 45 }).map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      delay: Math.random() * 6,
+      duration: 3 + Math.random() * 5,
+      size: 15 + Math.random() * 30,
+      rotation: Math.random() * 360,
+    }));
+    setBills(newBills);
+    const timer = setTimeout(() => setBills([]), 12000);
+    return () => clearTimeout(timer);
+  }, []);
+  return (
+    <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 9999, overflow: "hidden" }}>
+      {bills.map(b => (
+        <div key={b.id} style={{
+          position: "absolute",
+          top: -60,
+          left: `${b.left}%`,
+          fontSize: b.size,
+          animation: `moneyFall ${b.duration}s linear ${b.delay}s forwards`,
+          opacity: 0,
+        }}>
+          💵
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════
 // TOOLTIP
 // ═══════════════════════════════════════════════════
 const MetalTooltip = ({ active, payload, labelKey, valueKey, valueFormat }) => {
@@ -520,6 +556,7 @@ export default function MegaSenaDashboard() {
       fontFamily: "'Segoe UI', -apple-system, sans-serif",
       padding: 16,
     }}>
+      <MoneyRain />
       <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800;900&display=swap" rel="stylesheet" />
       <style>{`
         * { box-sizing: border-box; }
@@ -532,6 +569,11 @@ export default function MegaSenaDashboard() {
           0% { box-shadow: 0 0 10px rgba(212,175,55,0.4), 0 0 20px rgba(212,175,55,0.2); transform: scale(1); }
           50% { box-shadow: 0 0 25px rgba(212,175,55,0.8), 0 0 40px rgba(212,175,55,0.4); transform: scale(1.02); }
           100% { box-shadow: 0 0 10px rgba(212,175,55,0.4), 0 0 20px rgba(212,175,55,0.2); transform: scale(1); }
+        }
+
+        @keyframes moneyFall {
+          0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
       `}</style>
 
