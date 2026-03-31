@@ -4,7 +4,7 @@ import {
 } from "recharts";
 
 const DATA_URL =
-  "https://loteriascaixa-api.herokuapp.com/api/megasena";
+  "https://raw.githubusercontent.com/sosthenis/megasena-data/main/megasena.json";
 
 // ═══════════════════════════════════════════════════
 // CHROME & CARBON PALETTE
