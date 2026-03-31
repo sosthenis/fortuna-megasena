@@ -167,6 +167,394 @@ const MoneyRain = () => {
 };
 
 // ═══════════════════════════════════════════════════
+// INTRO SEQUENCE COMPONENT (ADVANCED CYBERPUNK)
+// ═══════════════════════════════════════════════════
+
+const INTRO_CSS = `
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&display=swap');
+  
+  #intro-root { background:#000; overflow:hidden; width:100vw; height:100vh; font-family:'Share Tech Mono',monospace; position:fixed; inset:0; z-index:10000; }
+  #intro-root canvas { position:fixed; top:0; left:0; z-index:0; }
+
+  /* ── GATE ── */
+  #gate {
+    position:fixed; inset:0; z-index:100;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:#000008; cursor:pointer;
+    transition:opacity 0.4s ease;
+  }
+  #gate-icon { font-size:48px; animation:gpulse 1.4s ease-in-out infinite; margin-bottom:14px; }
+  #gate-title {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(40px,8vw,90px);
+    color:#00ff88; letter-spacing:8px;
+    text-shadow:0 0 20px #00ff88,0 0 60px rgba(0,255,136,0.4);
+    animation:gglitch 4s infinite;
+  }
+  #gate-sub {
+    margin-top:14px; font-size:11px; letter-spacing:5px;
+    color:rgba(0,255,136,0.45); text-transform:uppercase;
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes gpulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
+  @keyframes gglitch {
+    0%,88%,100%{transform:translate(0);filter:none}
+    89%{transform:translate(-4px,1px);filter:hue-rotate(90deg)}
+    91%{transform:translate(4px,-1px);filter:hue-rotate(-60deg)}
+    93%{transform:translate(-2px,2px);filter:none}
+  }
+
+  /* ── COUNTDOWN OVERLAY ── */
+  #cd-overlay {
+    position:fixed; inset:0; z-index:50;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    pointer-events:none; opacity:0; transition:opacity 0.3s;
+  }
+  #cd-overlay.show { opacity:1; }
+
+  #cd-num {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(180px,32vw,380px);
+    color:transparent;
+    background:linear-gradient(180deg,rgba(0,255,136,0.22) 0%,rgba(0,255,136,0.04) 100%);
+    -webkit-background-clip:text; background-clip:text;
+    line-height:1; letter-spacing:-6px;
+    filter:drop-shadow(0 0 40px rgba(0,255,136,0.15));
+    user-select:none;
+  }
+  #cd-num.pop  { animation:cdPop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+  #cd-num.zap  { animation:cdZap 0.25s ease forwards; }
+  @keyframes cdPop {
+    0%  { transform:scale(0.5) skewX(-8deg); opacity:0.1; filter:drop-shadow(0 0 80px rgba(0,255,136,0.5)) blur(4px); }
+    60% { transform:scale(1.1) skewX(2deg);  opacity:1;   filter:drop-shadow(0 0 60px rgba(0,255,136,0.4)) blur(0); }
+    100%{ transform:scale(1)   skewX(0);     opacity:1;   filter:drop-shadow(0 0 30px rgba(0,255,136,0.2)); }
+  }
+  @keyframes cdZap {
+    0%  { opacity:1; transform:scale(1)    skewX(0);    filter:drop-shadow(0 0 80px #00ff88) brightness(2); }
+    50% { opacity:0.4; transform:scale(1.3) skewX(-12deg); filter:drop-shadow(0 0 120px #ff0055) brightness(3); }
+    100%{ opacity:0;   transform:scale(1.6) skewX(0);    filter:none; }
+  }
+
+  #cd-bar-wrap {
+    width:clamp(200px,35vw,360px); height:3px;
+    background:rgba(0,255,136,0.1); border-radius:2px; margin-top:14px; overflow:hidden;
+  }
+  #cd-bar {
+    height:100%; width:100%;
+    background:linear-gradient(90deg,#00ff88,#00ccff);
+    box-shadow:0 0 12px #00ff88;
+    transform-origin:left;
+    transform:scaleX(1);
+    transition:transform 0.9s linear;
+  }
+
+  #cd-label {
+    margin-top:16px; font-size:11px; letter-spacing:6px;
+    color:rgba(0,255,136,0.45); text-transform:uppercase;
+  }
+
+  /* ── MAIN UI ── */
+  .intro-ui {
+    position:fixed; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    z-index:20; text-align:center;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.5s ease;
+  }
+  .intro-ui.visible { opacity:1; pointer-events:all; }
+
+  .intro-sub-line { color:#00ff88; font-size:12px; letter-spacing:4px; margin-top:6px; opacity:0.6; }
+  .intro-glitch-wrap { position:relative; }
+  .intro-glitch {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(56px,9vw,110px);
+    color:#00ff88; letter-spacing:8px;
+    text-shadow:0 0 10px #00ff88,0 0 40px #00ff88,0 0 80px rgba(0,255,136,0.4);
+    animation:intro-glitch 3s infinite; display:block; position:relative;
+    opacity:0; animation:introGlitchIn 0.6s ease 0.2s forwards, intro-glitch 3s 1s infinite;
+  }
+  .intro-glitch::before,.intro-glitch::after { content:'FORTUNA'; position:absolute; top:0; left:0; right:0; }
+  .intro-glitch::before { color:#ff0055; text-shadow:0 0 20px #ff0055; animation:intro-glitch-1 3s infinite; clip-path:polygon(0 0,100% 0,100% 35%,0 35%); }
+  .intro-glitch::after  { color:#0088ff; text-shadow:0 0 20px #0088ff; animation:intro-glitch-2 3s infinite; clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%); }
+
+  .intro-dashboard-tag {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(20px,3vw,32px);
+    color:rgba(0,255,136,0.5); letter-spacing:12px; margin-top:4px;
+    opacity:0; animation:introLineUp 0.5s ease 0.45s forwards;
+  }
+  .intro-meta-line {
+    color:rgba(0,255,136,0.5); font-size:12px; letter-spacing:4px; margin-top:10px;
+    opacity:0; animation:introLineUp 0.5s ease 0.65s forwards;
+  }
+  .intro-counter {
+    margin-top:26px; font-size:13px; color:#00ff88; letter-spacing:2px;
+    animation:introBlink 1s step-end infinite;
+    opacity:0; animation:introLineUp 0.5s ease 0.8s forwards, introBlink 1s 1.3s step-end infinite;
+  }
+  .intro-btn {
+    margin-top:22px; display:inline-block; background:transparent;
+    border:1px solid #00ff88; color:#00ff88;
+    font-family:'Share Tech Mono',monospace; font-size:13px; letter-spacing:3px;
+    padding:12px 36px; cursor:pointer; text-transform:uppercase;
+    transition:all 0.2s;
+    box-shadow:0 0 20px rgba(0,255,136,0.2),inset 0 0 20px rgba(0,255,136,0.05);
+    opacity:0; animation:introLineUp 0.6s cubic-bezier(0.34,1.56,0.64,1) 1s forwards;
+  }
+  .intro-btn:hover { background:#00ff88; color:#000; box-shadow:0 0 40px rgba(0,255,136,0.7); }
+
+  /* CORNER INFO */
+  .intro-corner { position:fixed; font-size:9px; color:rgba(0,255,136,0.28); letter-spacing:1px; line-height:1.85; z-index:25; }
+  .intro-corner.tl{top:20px;left:20px} .intro-corner.tr{top:20px;right:20px;text-align:right}
+  .intro-corner.bl{bottom:20px;left:20px} .intro-corner.br{bottom:20px;right:20px;text-align:right}
+
+  /* Scanlines */
+  .intro-scan { position:fixed; inset:0; z-index:16; pointer-events:none;
+    background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 6px); }
+
+  @keyframes intro-glitch   { 0%,90%,100%{transform:translate(0)} 91%{transform:translate(-3px,1px)} 93%{transform:translate(3px,-1px)} 95%{transform:translate(-2px,2px)} }
+  @keyframes intro-glitch-1 { 0%,90%,100%{transform:translate(0);opacity:0} 91%{transform:translate(6px,0);opacity:0.8} 94%{transform:translate(-4px,0);opacity:0.6} 96%{opacity:0} }
+  @keyframes intro-glitch-2 { 0%,90%,100%{transform:translate(0);opacity:0} 92%{transform:translate(-6px,0);opacity:0.8} 95%{transform:translate(4px,0);opacity:0.6} 97%{opacity:0} }
+  @keyframes introGlitchIn { from{opacity:0;transform:skewX(-10deg) scale(0.92)} to{opacity:1;transform:skewX(0) scale(1)} }
+  @keyframes introLineUp   { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes introBlink    { 50%{opacity:0.15} }
+`;
+
+const IntroSequence = ({ onFinish }) => {
+  const canvasRef = useCallback((node) => {
+    if (!node) return;
+    const ctx = node.getContext('2d');
+    let width = (node.width = window.innerWidth);
+    let height = (node.height = window.innerHeight);
+    const bills = [];
+
+    const makeBill = () => ({
+      x: Math.random() * width,
+      y: -120 - Math.random() * height,
+      w: 88 + Math.random() * 32,
+      h: 0,
+      speed: 2 + Math.random() * 3,
+      rot: (Math.random() - 0.5) * 0.6,
+      rotV: (Math.random() - 0.5) * 0.02,
+      alpha: 0.18 + Math.random() * 0.5,
+      drift: (Math.random() - 0.5) * 1,
+      hue: Math.random() > 0.68 ? 150 : Math.random() > 0.5 ? 340 : 200,
+      flip: Math.random() * Math.PI * 2,
+      flipSpeed: (Math.random() - 0.5) * 0.04,
+    });
+
+    for (let i = 0; i < 24; i++) {
+      const b = makeBill();
+      b.y = Math.random() * height;
+      b.h = b.w * 0.44;
+      bills.push(b);
+    }
+
+    const drawNeonBill = (b) => {
+      const { x, y, w, h, rot, alpha, hue, flip } = b;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      const sY = Math.cos(flip);
+      ctx.scale(1, sY);
+      if (Math.abs(sY) < 0.05) {
+        ctx.restore();
+        return;
+      }
+      ctx.shadowColor = `hsl(${hue},100%,55%)`;
+      ctx.shadowBlur = 18;
+      const grad = ctx.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2);
+      grad.addColorStop(0, `hsla(${hue},80%,8%,0.95)`);
+      grad.addColorStop(1, `hsla(${hue + 20},80%,12%,0.95)`);
+      ctx.fillStyle = grad;
+      ctx.strokeStyle = `hsl(${hue},100%,45%)`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(-w / 2, -h / 2, w, h, 3);
+      ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle = `hsla(${hue},80%,40%,0.38)`;
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.roundRect(-w / 2 + 4, -h / 2 + 3, w - 8, h - 6, 1);
+      ctx.stroke();
+      ctx.shadowColor = `hsl(${hue},100%,70%)`;
+      ctx.shadowBlur = 10;
+      ctx.fillStyle = `hsl(${hue},100%,65%)`;
+      ctx.font = `bold ${h * 0.42}px monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('R$', 0, 0);
+      ctx.font = `${h * 0.2}px monospace`;
+      ctx.fillStyle = `hsla(${hue},100%,70%,0.6)`;
+      ctx.fillText('100', -w * 0.27, -h * 0.22);
+      ctx.fillText('100', w * 0.27, h * 0.22);
+      ctx.restore();
+    };
+
+    let frame;
+    const loop = () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = '#000008';
+      ctx.fillRect(0, 0, width, height);
+      ctx.strokeStyle = 'rgba(0,255,136,0.035)';
+      ctx.lineWidth = 1;
+      for (let gx = 0; gx < width; gx += 60) {
+        ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, height); ctx.stroke();
+      }
+      for (let gy = 0; gy < height; gy += 60) {
+        ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(width, gy); ctx.stroke();
+      }
+      bills.forEach((b) => {
+        if (!b.h) b.h = b.w * 0.44;
+        b.y += b.speed; b.x += b.drift; b.rot += b.rotV; b.flip += b.flipSpeed;
+        if (b.y > height + b.h) {
+          Object.assign(b, makeBill()); b.h = b.w * 0.44;
+        }
+        drawNeonBill(b);
+      });
+      frame = requestAnimationFrame(loop);
+    };
+    loop();
+
+    const handleResize = () => {
+      width = (node.width = window.innerWidth);
+      height = (node.height = window.innerHeight);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const [stage, setStage] = useState('gate'); // gate, countdown, ui
+  const [count, setCount] = useState(5);
+  const [percent, setPercent] = useState(0);
+  const acRef = useState({ current: null })[0];
+
+  const getAC = () => {
+    if (!acRef.current) acRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    if (acRef.current.state === 'suspended') acRef.current.resume();
+    return acRef.current;
+  };
+
+  const playBeep = (n) => {
+    try {
+      const ac = getAC(); const t = ac.currentTime;
+      const osc = (freq, start, dur, vol, type = 'square') => {
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.type = type; o.connect(g); g.connect(ac.destination);
+        o.frequency.setValueAtTime(freq, t + start);
+        g.gain.setValueAtTime(0, t + start);
+        g.gain.linearRampToValueAtTime(vol, t + start + 0.008);
+        g.gain.exponentialRampToValueAtTime(0.001, t + start + dur);
+        o.start(t + start); o.stop(t + start + dur + 0.02);
+      };
+      if (n === 5) osc(320, 0, 0.08, 0.15);
+      else if (n === 4) osc(440, 0, 0.06, 0.28);
+      else if (n === 3) osc(600, 0, 0.1, 0.25, 'sawtooth');
+      else if (n === 2) osc(800, 0, 0.05, 0.25);
+      else if (n === 1) osc(1000, 0, 0.15, 0.22, 'sawtooth');
+      else if (n === 0) {
+        osc(60, 0, 0.15, 0.4, 'sawtooth');
+        osc(120, 0, 0.12, 0.3);
+      }
+    } catch (e) { }
+  };
+
+  const playChing = () => {
+    try {
+      const ac = getAC(); const t = ac.currentTime;
+      const beep = (f, s, d, v) => {
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.connect(g); g.connect(ac.destination);
+        o.frequency.setValueAtTime(f, t + s);
+        g.gain.setValueAtTime(0, t + s);
+        g.gain.linearRampToValueAtTime(v, t + s + 0.008);
+        g.gain.exponentialRampToValueAtTime(0.001, t + s + d);
+        o.start(t + s); o.stop(t + s + d + 0.04);
+      };
+      beep(1400, 0, 0.1, 0.2); beep(1050, 0.05, 0.15, 0.3);
+    } catch (e) { }
+  };
+
+  useEffect(() => {
+    if (stage === 'countdown') {
+      if (count > 0) {
+        playBeep(count);
+        const timer = setTimeout(() => setCount(count - 1), 1000);
+        return () => clearTimeout(timer);
+      } else {
+        playBeep(0);
+        setTimeout(() => {
+          setStage('ui');
+          playChing();
+          let p = 0;
+          const iv = setInterval(() => {
+            p += Math.floor(Math.random() * 6) + 2;
+            if (p >= 100) { p = 100; clearInterval(iv); }
+            setPercent(p);
+          }, 50);
+        }, 800);
+      }
+    }
+  }, [stage, count]);
+
+  const startSequence = () => {
+    getAC();
+    setStage('countdown');
+  };
+
+  const labels = ['', '■ IMPACTO IMINENTE ■', '■ PREPARANDO SISTEMA ■', '■ SINCRONIZANDO ■', '■ VERIFICANDO MÓDULOS ■', '■ INICIALIZANDO SISTEMA ■'];
+
+  return (
+    <div id="intro-root">
+      <style>{INTRO_CSS}</style>
+      <canvas ref={canvasRef} />
+      <div className="intro-scan" />
+
+      {stage === 'gate' && (
+        <div id="gate" onClick={startSequence}>
+          <div id="gate-icon">⚡</div>
+          <div id="gate-title">FORTUNA ENGINE</div>
+          <div id="gate-sub">▶ clique para iniciar sequência</div>
+        </div>
+      )}
+
+      {stage === 'countdown' && (
+        <div id="cd-overlay" className="show">
+          <div id="cd-num" className="pop">{count === 0 ? 'GO!' : count}</div>
+          <div id="cd-bar-wrap">
+            <div id="cd-bar" style={{ transform: `scaleX(${count / 5})`, transition: count === 5 ? 'none' : 'transform 0.9s linear' }} />
+          </div>
+          <div id="cd-label">{labels[count] || '■ INICIANDO ■'}</div>
+        </div>
+      )}
+
+      {stage === 'ui' && (
+        <div className="intro-ui visible">
+          <div className="intro-sub-line">■ FORTUNA ENGINE — STATISTICAL SYSTEM</div>
+          <div className="intro-glitch-wrap"><span className="intro-glitch">FORTUNA</span></div>
+          <div className="intro-dashboard-tag">ENGINE</div>
+          <div className="intro-meta-line">Mega-Sena Statistical Engine · React 19 + Vite 8</div>
+          <div className="intro-counter">█ SISTEMA ONLINE... {percent}%</div>
+          {percent >= 100 && (
+            <button className="intro-btn" onClick={onFinish}>[ ACESSAR SISTEMA ]</button>
+          )}
+        </div>
+      )}
+
+      <div className="intro-corner tl">FORTUNA ENGINE v2.0.26<br />REACT 19 + VITE 8<br />RECHARTS 3</div>
+      <div className="intro-corner tr">MÓDULO: STATISTICAL<br />STATUS: ONLINE<br />SEED: 14.133</div>
+      <div className="intro-corner bl">SOSTHENIS.GITHUB.IO<br />FORTUNA-MEGASENA</div>
+      <div className="intro-corner br">SYS: ACTIVE<br />PWR: 100%</div>
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════
 // TOOLTIP
 // ═══════════════════════════════════════════════════
 const MetalTooltip = ({ active, payload, labelKey, valueKey, valueFormat }) => {
@@ -453,6 +841,7 @@ function Divider() {
 // MAIN APP
 // ═══════════════════════════════════════════════════
 export default function MegaSenaDashboard() {
+  const [showIntro, setShowIntro] = useState(true);
   const [rawData, setRawData]   = useState(null);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
@@ -541,6 +930,10 @@ export default function MegaSenaDashboard() {
       </div>
     </div>
   );
+
+  if (showIntro) {
+    return <IntroSequence onFinish={() => setShowIntro(false)} />;
+  }
 
   // ── Main ─────────────────────────────────────────
   return (
