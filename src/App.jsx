@@ -432,7 +432,6 @@ const IntroSequence = ({ onFinish }) => {
   const [stage, setStage] = useState('gate'); // gate, countdown, ui
   const [count, setCount] = useState(5);
   const [percent, setPercent] = useState(0);
-  const [audio] = useState(() => typeof window !== 'undefined' ? new Audio('/som.mp3') : null);
   const acRef = useState({ current: null })[0];
 
   const playBeep = (n) => {};
@@ -455,9 +454,10 @@ const IntroSequence = ({ onFinish }) => {
             if (p >= 100) { 
               p = 100; 
               clearInterval(iv); 
-              if (audio) {
-                audio.currentTime = 0;
-                audio.play().catch(e => console.error("Audio error:", e));
+              const aud = document.getElementById('cyber-audio');
+              if (aud) {
+                aud.currentTime = 0;
+                aud.play().catch(e => console.error("Audio error:", e));
               }
               setTimeout(onFinish, 800); // 800ms delay before dismissing intro
             }
@@ -469,11 +469,12 @@ const IntroSequence = ({ onFinish }) => {
   }, [stage, count]);
 
   const startSequence = () => {
-    if (audio) {
+    const aud = document.getElementById('cyber-audio');
+    if (aud) {
       // Unlocks the audio element in Safari/Chrome by playing on user gesture
-      audio.play().catch(() => {});
-      audio.pause();
-      audio.currentTime = 0;
+      aud.play().catch(() => {});
+      aud.pause();
+      aud.currentTime = 0;
     }
     setStage('countdown');
   };
