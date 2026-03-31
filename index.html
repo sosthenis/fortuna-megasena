@@ -424,11 +424,11 @@
               ctrEl.textContent=`█ SISTEMA ONLINE... ${p}%`;
               if(p>=100){
                 clearInterval(iv);
+                // Cash Register Sound when UI hits 100%!
+                playCashRegister();
                 setTimeout(exitIntro, 1200);
               }
             },50);
-            // Cash Register Sound when UI arrives!
-            playCashRegister();
           }, 750);
           return;
         }
