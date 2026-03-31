@@ -429,7 +429,7 @@ const IntroSequence = ({ onFinish }) => {
     };
   }, []);
 
-  const [stage, setStage] = useState('countdown'); // countdown, ui
+  const [stage, setStage] = useState('gate'); // gate, countdown, ui
   const [count, setCount] = useState(5);
   const [percent, setPercent] = useState(0);
   const acRef = useState({ current: null })[0];
@@ -454,6 +454,7 @@ const IntroSequence = ({ onFinish }) => {
             if (p >= 100) { 
               p = 100; 
               clearInterval(iv); 
+              try { new Audio('/som.mp3').play(); } catch(e) {}
               setTimeout(onFinish, 800); // 800ms delay before dismissing intro
             }
             setPercent(p);
@@ -476,6 +477,14 @@ const IntroSequence = ({ onFinish }) => {
       <div className="intro-scan" />
 
 
+
+      {stage === 'gate' && (
+        <div id="gate" onClick={startSequence} style={{ cursor: 'pointer', position: 'absolute', inset: 0, zIndex: 100, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#000008', transition: 'opacity 0.4s ease' }}>
+          <div id="gate-icon" style={{ fontSize: '48px', marginBottom: '14px', animation: 'gpulse 1.4s infinite' }}>⚡</div>
+          <div id="gate-title" style={{ fontFamily: '"Bebas Neue", sans-serif', fontSize: 'clamp(40px, 8vw, 90px)', color: '#00ff88', letterSpacing: '8px', textShadow: '0 0 20px #00ff88', animation: 'gglitch 4s infinite' }}>FORTUNA ENGINE</div>
+          <div id="gate-sub" style={{ marginTop: '14px', fontSize: '11px', letterSpacing: '5px', color: 'rgba(0,255,136,0.45)', textTransform: 'uppercase', animation: 'blink 1s step-end infinite' }}>▶ CLIQUE PARA INICIAR SEQUÊNCIA</div>
+        </div>
+      )}
 
       {stage === 'countdown' && (
         <div id="cd-overlay" className="show">
