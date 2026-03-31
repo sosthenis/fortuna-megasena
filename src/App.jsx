@@ -434,51 +434,8 @@ const IntroSequence = ({ onFinish }) => {
   const [percent, setPercent] = useState(0);
   const acRef = useState({ current: null })[0];
 
-  const getAC = () => {
-    if (!acRef.current) acRef.current = new (window.AudioContext || window.webkitAudioContext)();
-    if (acRef.current.state === 'suspended') acRef.current.resume();
-    return acRef.current;
-  };
-
-  const playBeep = (n) => {
-    try {
-      const ac = getAC(); const t = ac.currentTime;
-      const osc = (freq, start, dur, vol, type = 'square') => {
-        const o = ac.createOscillator(), g = ac.createGain();
-        o.type = type; o.connect(g); g.connect(ac.destination);
-        o.frequency.setValueAtTime(freq, t + start);
-        g.gain.setValueAtTime(0, t + start);
-        g.gain.linearRampToValueAtTime(vol, t + start + 0.008);
-        g.gain.exponentialRampToValueAtTime(0.001, t + start + dur);
-        o.start(t + start); o.stop(t + start + dur + 0.02);
-      };
-      if (n === 5) osc(320, 0, 0.08, 0.15);
-      else if (n === 4) osc(440, 0, 0.06, 0.28);
-      else if (n === 3) osc(600, 0, 0.1, 0.25, 'sawtooth');
-      else if (n === 2) osc(800, 0, 0.05, 0.25);
-      else if (n === 1) osc(1000, 0, 0.15, 0.22, 'sawtooth');
-      else if (n === 0) {
-        osc(60, 0, 0.15, 0.4, 'sawtooth');
-        osc(120, 0, 0.12, 0.3);
-      }
-    } catch (e) { }
-  };
-
-  const playChing = () => {
-    try {
-      const ac = getAC(); const t = ac.currentTime;
-      const beep = (f, s, d, v) => {
-        const o = ac.createOscillator(), g = ac.createGain();
-        o.connect(g); g.connect(ac.destination);
-        o.frequency.setValueAtTime(f, t + s);
-        g.gain.setValueAtTime(0, t + s);
-        g.gain.linearRampToValueAtTime(v, t + s + 0.008);
-        g.gain.exponentialRampToValueAtTime(0.001, t + s + d);
-        o.start(t + s); o.stop(t + s + d + 0.04);
-      };
-      beep(1400, 0, 0.1, 0.2); beep(1050, 0.05, 0.15, 0.3);
-    } catch (e) { }
-  };
+  const playBeep = (n) => {};
+  const playChing = () => {};
 
   useEffect(() => {
     if (stage === 'countdown') {
@@ -503,7 +460,6 @@ const IntroSequence = ({ onFinish }) => {
   }, [stage, count]);
 
   const startSequence = () => {
-    getAC();
     setStage('countdown');
   };
 
