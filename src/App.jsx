@@ -429,7 +429,7 @@ const IntroSequence = ({ onFinish }) => {
     };
   }, []);
 
-  const [stage, setStage] = useState('gate'); // gate, countdown, ui
+  const [stage, setStage] = useState('countdown'); // countdown, ui
   const [count, setCount] = useState(5);
   const [percent, setPercent] = useState(0);
   const acRef = useState({ current: null })[0];
@@ -451,7 +451,11 @@ const IntroSequence = ({ onFinish }) => {
           let p = 0;
           const iv = setInterval(() => {
             p += Math.floor(Math.random() * 6) + 2;
-            if (p >= 100) { p = 100; clearInterval(iv); }
+            if (p >= 100) { 
+              p = 100; 
+              clearInterval(iv); 
+              setTimeout(onFinish, 800); // 800ms delay before dismissing intro
+            }
             setPercent(p);
           }, 50);
         }, 800);
@@ -471,13 +475,7 @@ const IntroSequence = ({ onFinish }) => {
       <canvas ref={canvasRef} />
       <div className="intro-scan" />
 
-      {stage === 'gate' && (
-        <div id="gate" onClick={startSequence}>
-          <div id="gate-icon">⚡</div>
-          <div id="gate-title">FORTUNA ENGINE</div>
-          <div id="gate-sub">▶ clique para iniciar sequência</div>
-        </div>
-      )}
+
 
       {stage === 'countdown' && (
         <div id="cd-overlay" className="show">
@@ -497,7 +495,7 @@ const IntroSequence = ({ onFinish }) => {
           <div className="intro-meta-line">Mega-Sena Statistical Engine · React 19 + Vite 8</div>
           <div className="intro-counter">█ SISTEMA ONLINE... {percent}%</div>
           {percent >= 100 && (
-            <button className="intro-btn" onClick={onFinish}>[ ACESSAR SISTEMA ]</button>
+            <div className="intro-meta-line" style={{marginTop: 20, color: '#fff'}}>Iniciando ambiente seguro...</div>
           )}
         </div>
       )}
